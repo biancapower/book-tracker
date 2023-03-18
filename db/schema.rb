@@ -10,9 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_18_065038) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_18_103008) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "author_books", force: :cascade do |t|
+    t.bigint "author_id", null: false
+    t.bigint "book_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id", "book_id"], name: "index_author_books_on_author_id_and_book_id", unique: true
+    t.index ["author_id"], name: "index_author_books_on_author_id"
+    t.index ["book_id"], name: "index_author_books_on_book_id"
+  end
+
+  create_table "authors", force: :cascade do |t|
+    t.string "open_library_key", null: false
+    t.string "name", null: false
+    t.string "birth_date"
+    t.string "alternate_names", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["open_library_key"], name: "index_authors_on_open_library_key", unique: true
+  end
+
+  create_table "books", force: :cascade do |t|
+    t.string "open_library_key", null: false
+    t.string "title", null: false
+    t.integer "number_of_pages"
+    t.text "first_sentence"
+    t.text "description"
+    t.string "cover_images", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["open_library_key"], name: "index_books_on_open_library_key", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -26,4 +58,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_18_065038) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "author_books", "authors"
+  add_foreign_key "author_books", "books"
 end
