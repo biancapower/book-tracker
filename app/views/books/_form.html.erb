@@ -1,0 +1,88 @@
+<%= form_with(model: book, class: "contents") do |form| %>
+  <% if book.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(book.errors.count, "error") %> prohibited this book from being saved:</h2>
+
+      <ul>
+        <% book.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :open_library_key %>
+    <%= form.text_field :open_library_key, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :title %>
+    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+<%
+=begin %>
+  <div class="my-5">
+    <%= form.label :authors_open_library_keys, 'Authors Open Library Keys (comma-separated)' %>
+    <%= form.text_field :authors_open_library_keys, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+<%
+=end %>
+
+  <div class="my-5">
+    <%= form.label :cover_images, 'Cover Images (comma-separated)' %>
+    <%= form.text_field :cover_images, value: book.cover_images.join(','), class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :number_of_pages %>
+    <%= form.number_field :number_of_pages, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :first_sentence %>
+    <%= form.text_area :first_sentence, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 4, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
+
+
+<!-- add author fields to book form -->
+<%
+=begin %>
+<%= form_with(model: book, local: true) do |form| %>
+  <!-- other fields for book -->
+
+  <div class="field">
+    <%= form.label :authors %>
+    <%= form.fields_for :authors do |author_fields| %>
+      <div class="author-fields">
+        <%= author_fields.label :open_library_key %>
+        <%= author_fields.text_field :open_library_key %>
+
+        <%= author_fields.label :name %>
+        <%= author_fields.text_field :name %>
+
+        <%= author_fields.label :birth_date %>
+        <%= author_fields.date_field :birth_date %>
+
+        <%= author_fields.label :alternate_names %>
+        <%= author_fields.text_field :alternate_names %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<%
+=end %>
