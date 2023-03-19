@@ -20,13 +20,7 @@ class BooksController < ApplicationController
 
     respond_to do |format|
       if @book.save
-        # authors_open_library_keys = params[:book][:authors_open_library_keys].split(',')
-
-        # authors_open_library_keys.each do |open_library_key|
-        #   author = Author.find_by(open_library_key: open_library_key)
-        #   @book.authors << author if author.present?
-        # end
-
+        associate_authors_with_book
         update_cover_images_list(params[:book][:cover_images])
 
         format.html { redirect_to book_url(@book), notice: "Book was successfully created." }
@@ -41,6 +35,7 @@ class BooksController < ApplicationController
   def update
     respond_to do |format|
       if @book.update(book_params)
+        associate_authors_with_book
         update_cover_images_list(params[:book][:cover_images])
 
         format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
@@ -63,13 +58,22 @@ class BooksController < ApplicationController
 
   private
 
-  def set_book
-    @book = Book.find(params[:id])
+  def associate_authors_with_book
+    authors_open_library_keys = params[:book][:authors_open_library_keys].gsub(/\s+/, '').split(',')
+
+    authors_open_library_keys.each do |open_library_key|
+      author = Author.find_or_create_by(open_library_key: open_library_key)
+      @book.authors << author
+    end
   end
 
   def update_cover_images_list(cover_images)
     cover_image_ids = cover_images.gsub(/\s+/, '').split(',')
     @book.update(cover_images: cover_image_ids)
+  end
+
+  def set_book
+    @book = Book.find(params[:id])
   end
 
   def book_params
