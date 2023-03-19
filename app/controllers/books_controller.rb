@@ -18,10 +18,13 @@ class BooksController < ApplicationController
   def create
     @book = Book.new(book_params)
 
+    # associates the book with its authors
+    # by the author open library keys specified in a book record
+    @book.associate_authors_by_open_library_keys(params[:book][:authors_open_library_keys])
+
     respond_to do |format|
       if @book.save
-        associate_authors_with_book
-        update_cover_images_list(params[:book][:cover_images])
+        @book.update_cover_images_list(params[:book][:cover_images])
 
         format.html { redirect_to book_url(@book), notice: "Book was successfully created." }
         format.json { render :show, status: :created, location: @book }
@@ -33,10 +36,15 @@ class BooksController < ApplicationController
   end
 
   def update
+    # updates the book's attributes prior to saving
+    @book.assign_attributes(book_params)
+
+    # associates the book with its authors
+    @book.associate_authors_by_open_library_keys(params[:book][:authors_open_library_keys])
+
     respond_to do |format|
-      if @book.update(book_params)
-        associate_authors_with_book
-        update_cover_images_list(params[:book][:cover_images])
+      if @book.save
+        @book.update_cover_images_list(params[:book][:cover_images])
 
         format.html { redirect_to book_url(@book), notice: "Book was successfully updated." }
         format.json { render :show, status: :ok, location: @book }
@@ -58,26 +66,11 @@ class BooksController < ApplicationController
 
   private
 
-  def associate_authors_with_book
-    authors_open_library_keys = params[:book][:authors_open_library_keys].gsub(/\s+/, '').split(',')
-
-    authors_open_library_keys.each do |open_library_key|
-      author = Author.find_or_create_by(open_library_key: open_library_key)
-      @book.authors << author
-    end
-  end
-
-  def update_cover_images_list(cover_images)
-    cover_image_ids = cover_images.gsub(/\s+/, '').split(',')
-    @book.update(cover_images: cover_image_ids)
-  end
-
   def set_book
     @book = Book.find(params[:id])
   end
 
   def book_params
-    params.require(:book).permit(:open_library_key, :title, :number_of_pages, :first_sentence, :description,
-                                  author_attributes: [:id, :open_library_key, :name, :birth_date, :alternate_names, :_destroy])
+    params.require(:book).permit(:open_library_key, :title, :number_of_pages, :first_sentence, :description)
   end
 end

@@ -50,35 +50,3 @@
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>
-
-
-<!-- add author fields to book form -->
-<%
-=begin %>
-<%= form_with(model: book, local: true) do |form| %>
-  <!-- other fields for book -->
-
-  <div class="field">
-    <%= form.label :authors %>
-    <%= form.fields_for :authors do |author_fields| %>
-      <div class="author-fields">
-        <%= author_fields.label :open_library_key %>
-        <%= author_fields.text_field :open_library_key %>
-
-        <%= author_fields.label :name %>
-        <%= author_fields.text_field :name %>
-
-        <%= author_fields.label :birth_date %>
-        <%= author_fields.date_field :birth_date %>
-
-        <%= author_fields.label :alternate_names %>
-        <%= author_fields.text_field :alternate_names %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<%
-=end %>
