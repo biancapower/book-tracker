@@ -1,24 +1,17 @@
-# README
+# Book Tracker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Development
 
-Things you may want to cover:
+### Running the debugger
 
-* Ruby version
+The `debug` gem is used to run the debugger. Because Foreman is used in this project, remote debugging has been configured.
+To run the debugger:
 
-* System dependencies
+- Leave the server running
+- Add a breakpoint to the code (`debugger`)
+- Open a new terminal
+- Run the following command:
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```sh
+rails dev:debug
+```
